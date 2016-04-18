@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+
+   id="SBYAMLInput"
+   iconfile="icon.png"
+   description="Seibels YAML Input"
+   tooltip="Parse a YAML file for use by kettle"
+   category="Seibels Plugins"
+   classname="com.seibelsdata.di.plugins.sbyamlinput.SBYAMLInputMeta">
+
+   <libraries>
+       <library name="SBYAMLInput.jar"/>
+   </libraries>
+
+</plugin>
