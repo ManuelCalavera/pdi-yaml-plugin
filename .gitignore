@@ -7,12 +7,15 @@ target/
 .DS_Store
  
 *.class
- 
+
 # Package Files #
 *.jar
 *.war
 *.ear
 *.db
+ 
+# Allow all files in the plugin directory #
+!plugin/**/*.jar
  
 ######################
 # Windows
