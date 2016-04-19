@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 // TODO: Comment and Document
-// TODO: Fix bug with repeating entries
 
 public class SeibelsYAMLInput extends BaseStep implements StepInterface {
 	String fileName;
@@ -57,24 +56,29 @@ public class SeibelsYAMLInput extends BaseStep implements StepInterface {
 	        
 	        logDetailed("keys: " + keys.keySet().toString());
 
+	        // Create a field for every unique key combination in the YAML file
 	        meta.generateFields(data.outputRowMeta, getStepname(), null, null, this, repository, metaStore, keys.keySet());
 	        
+	        // Set number of unique keys
+	        // TODO: set other data variables in the Data class to comply with Pentaho best practices
 	        data.numYAMLKeys = keys.keySet().size();
 	        
+	        // Set a field index for every key
 	        int i = 0;
 	        for (String key : keys.keySet()) {
 	        	keyIndecies.put(key, i++);
 	        }
-
-	        // Every ArrayList in parsedMap is a new row
+	        
+	        // Every ArrayList in the parsedMap is a new row
 	        for (ArrayList<String[]> aL : parsedMap) {
 			    Object[] row = RowDataUtil.allocateRowData(data.numYAMLKeys);
 
 		        // Every String in that ArrayList is a new field
 	            for (String[] s : aL) {
 				    RowDataUtil.addValueData(row, keyIndecies.get(s[0]), s[1]);
-				    putRow( data.outputRowMeta, row );
 	            }
+	            
+	            putRow( data.outputRowMeta, row );
 	        }
 	    }
 	    
