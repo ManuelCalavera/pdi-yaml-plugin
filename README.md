@@ -1,8 +1,8 @@
 ## Installation
-Copy the folder `SeibelsYAMLInput` from the `plugin` directory into kettle's plugin directory. This directory is by default `$PENTAHO_HOME/plugins/steps`. When you restart Spoon the plugin will be available in transformations under a new folder titled `Seibels Plugins`.
+Copy the folder `SeibelsYAMLInput` from the `plugin` directory into your local kettle's plugin directory. This directory is by default `$PENTAHO_HOME/plugins/steps`. After restarting Spoon the plugin will be available in all transformations under a new folder titled `Seibels Plugins`.
 
 ## About
-The purpose of writing a custom YAML step is to add support for multiple YAML patterns using the SnakeYAML library. The packaged YAML step is not well documented and doesn't supply guidelines for supported formats. An example of one of the intended formats that the plugin can parse is as follows:
+The packaged YAML step is not well documented and doesn't supply guidelines for supported formats. The purpose of writing this custom YAML step is to add support for multiple YAML patterns using the SnakeYAML library. An example of one of the intended formats that the plugin can parse is as follows:
 
 ```
 tables:
@@ -17,9 +17,9 @@ lookups:
 ```
 
 ## Use
-To use the plugin start by dragging the created step from the `Seibels Plugins` folder into the transformation. Set the path of the YAML file in the box `File Path`, this path can be a variable. At the moment the step does not process row input and all incoming rows will be dropped. The step is intended to generate rows only.
+To use the plugin start by dragging the new step from the `Seibels Plugins` folder into a transformation. Open the step options by double clicking on it and set the path of the YAML file in the box `File Path`. This path can be a variable. At the moment the step does not process row input and all incoming rows will be dropped. The step is intended to generate rows only.
 
-When ran the YAML will be parsed and every YAML entry will be sent to kettle as a row. Every unique key will then be set as a field. Using the above example the output would be:
+When the transformation is ran the YAML will be parsed and every YAML entry will be sent to kettle as a row. Every unique key will then be set as a field. The output created by using the above YAML example would be:
 ```
 tables-schema: dbo  tables-table: Address  tables-sql: Address.sql  lookups-name: null  lookups-sql: null
 tables-schema: dbo  tables-table: Item     tables-sql: Item.sql     lookups-name: null  lookups-sql: null
