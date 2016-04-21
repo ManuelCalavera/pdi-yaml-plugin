@@ -1,5 +1,6 @@
 package com.seibelsdata.di.plugins.seibelsyamlinput;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,6 +33,7 @@ public class SeibelsYAMLInputMeta extends BaseStepMeta implements StepMetaInterf
 
 	private static Class<?> PKG = SeibelsYAMLInputMeta.class; // for i18n purposes
 	private String filePath;
+	private String[] outputFields;
 
 	public SeibelsYAMLInputMeta() {
 		super(); 
@@ -51,16 +53,30 @@ public class SeibelsYAMLInputMeta extends BaseStepMeta implements StepMetaInterf
 	
 	public void setDefault() {
 		filePath = "";
+		allocate(0);
 	}
 
 	public String getFilePath() {
 		return filePath;
 	}
+	
+    // helper method to allocate the arrays
+    public void allocate(int nrkeys) {
+        outputFields = new String[nrkeys];
+    }
 
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
 	}
 
+	public void addOutputField(String key, int index) {
+		outputFields[index] = key ;
+	}
+	
+	public String getOutputField(int index) {
+		return outputFields[index];
+	}
+	
 	/*****************************
 	 * Save step settings to ktr
 	 *****************************/
@@ -95,9 +111,9 @@ public class SeibelsYAMLInputMeta extends BaseStepMeta implements StepMetaInterf
 			throw new KettleException("Unable to load step from repository", e);
 		}
 	}
-	
-	public void generateFields(RowMetaInterface inputRowMeta, String origin, RowMetaInterface[] info, StepMeta nextStep, VariableSpace space, Repository repository, IMetaStore metaStore, Set<String> keySet) throws KettleStepException{
-        for (String key : keySet) { 
+
+	public void getFields(RowMetaInterface inputRowMeta, String origin, RowMetaInterface[] info, StepMeta nextStep, VariableSpace space, Repository repository, IMetaStore metaStore) throws KettleStepException{
+        for (String key : outputFields) { 
 			// a value meta object contains the meta data for a field
 			ValueMetaInterface v = new ValueMeta(key, ValueMeta.TYPE_STRING);
 			v.setTrimType(ValueMeta.TRIM_TYPE_BOTH);
@@ -108,22 +124,10 @@ public class SeibelsYAMLInputMeta extends BaseStepMeta implements StepMetaInterf
         }
 	}
 	
-	public void getFields(RowMetaInterface inputRowMeta, String origin, RowMetaInterface[] info, StepMeta nextStep, VariableSpace space, Repository repository, IMetaStore metaStore) throws KettleStepException{
-
-		// a value meta object contains the meta data for a field
-		ValueMetaInterface v = new ValueMeta("test");
-		v.setTrimType(ValueMeta.TRIM_TYPE_BOTH);
-		v.setOrigin(origin);
-		
-		// modify the row structure and add the field this step generates  
-		inputRowMeta.addValueMeta(v);
-		
-	}
-	
 	public void check(List<CheckResultInterface> remarks, TransMeta transMeta, StepMeta stepMeta, RowMetaInterface prev, String input[], String output[], RowMetaInterface info, VariableSpace space, Repository repository, IMetaStore metaStore)  {
 		// See if there are input streams leading to this step!
 		remarks.add((input.length > 0)
-				  ? new CheckResult(CheckResult.TYPE_RESULT_OK, BaseMessages.getString(PKG, "YAML.CheckResult.ReceivingRows.OK"), stepMeta)
-		          : new CheckResult(CheckResult.TYPE_RESULT_ERROR, BaseMessages.getString(PKG, "YAML.CheckResult.ReceivingRows.ERROR"), stepMeta));
+		          ? new CheckResult(CheckResult.TYPE_RESULT_ERROR, BaseMessages.getString(PKG, "YAML.CheckResult.ReceivingRows.ERROR"), stepMeta)
+				  : new CheckResult(CheckResult.TYPE_RESULT_OK, BaseMessages.getString(PKG, "YAML.CheckResult.ReceivingRows.OK"), stepMeta));
 	}
 }

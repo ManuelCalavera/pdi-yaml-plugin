@@ -120,25 +120,29 @@ public class SeibelsYAMLInput extends BaseStep implements StepInterface {
         }
         
         logDetailed("keys: " + keys.keySet().toString());
+        
+        // Set number of unique keys
+        // TODO: set other data variables in the Data class to comply with Pentaho best practices
+        data.numYAMLKeys = keys.keySet().size();
+        meta.allocate(data.numYAMLKeys);
+        
+        // Set a field index for every key
+        int i = 0;
+        for (String key : keys.keySet()) {
+        	meta.addOutputField(key, i);
+        	keyIndicies.put(key, i++);
+        }
 
 		// Create new row metadata
         // Create a field for every unique key combination in the YAML file
         data.outputRowMeta = (RowMetaInterface) new RowMeta();
         try {
-			meta.generateFields(data.outputRowMeta, getStepname(), null, null, this, repository, metaStore, keys.keySet());
+			meta.getFields(data.outputRowMeta, getStepname(), null, null, this, repository, metaStore);
 		} catch (KettleStepException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
-        // Set number of unique keys
-        // TODO: set other data variables in the Data class to comply with Pentaho best practices
-        data.numYAMLKeys = keys.keySet().size();
-        
-        // Set a field index for every key
-        int i = 0;
-        for (String key : keys.keySet()) keyIndicies.put(key, i++);
-        
+
         // clean up
         yamlData.clear();
         keys.clear();
